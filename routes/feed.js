@@ -4,7 +4,7 @@ const express = require('express');
 
 const feedController = require('../controllers/feed')
 
-const router = require('router');
+const router = express.Router();
 
 //logic executed when request reached this
 //                   GET handle /feed/posts
