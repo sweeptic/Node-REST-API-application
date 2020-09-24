@@ -10,4 +10,7 @@ const router = express.Router();
 //                   GET handle /feed/posts
 router.get('/posts', feedController.getPosts);      //PATH - METHOD pair
 
+//POST /feed/post
+router.post('/post', feedController.createPost); 
+
 module.exports = router;
