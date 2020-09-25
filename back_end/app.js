@@ -1,7 +1,7 @@
 // request -> middleware -> next() middleware -> res.send() response
 
 // const http = require('http');
-
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -13,6 +13,8 @@ const app = express();
 // app.use(bodyParser.urlencoded());   // x-www-form-urlencoded -default data when submitted form post request
 
 app.use(bodyParser.json());   //application/json
+
+app.use('/images', express.static(path.join(__dirname, 'images'))); //absolute path + images folder
 
 
 //set header any response -because we built rest api
@@ -28,11 +30,20 @@ app.use((req, res, next) => {
 //app use -  any method
 app.use('/feed', feedRoutes);
 
+//error handling middleware
+app.use((error, req, res, next) => {
+   console.log(error);
+   const status = error.statusCode || 500;
+   const message = error.message;
+   res.status(status).json({ message: message });
+})
+
+
 const MONGODB_URI = 'mongodb+srv://admin:admin@cluster0.tnfyo.gcp.mongodb.net/Cluster0?retryWrites=true&w=majority'
 const SECRET = '!+%G!THghfdgre+%R43trgfd44'
 
 
-mongoose.connect(MONGODB_URI,  { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
    .then(() => app.listen(8080))
    .catch(err => console.log(err));
 
