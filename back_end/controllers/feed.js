@@ -6,31 +6,25 @@ const Post = require('../models/post')
 //title, author, date, image, content
 
 exports.getPosts = (req, res, next) => {
-   //send response
-   //status code is important !! (then catch ....)
-   res.status(200).json({
-      posts: [{
-
-         _id: '1',
-         title: 'First Post',
-         content: 'This is the first post',
-         imageUrl: 'duck/IMG_1257.JPG',
-         creator: {
-            name: 'SurferBoy'
-         },
-         createdAt: new Date()
-
-
-      }]
-   });
+   Post
+      .find()
+      .then(posts => {
+         res
+            .status(200)
+            .json({ message: 'Fetched posts successfully.', posts: posts })
+      })
+      .catch(err => {
+         if (!err.statusCode) {
+            err.statusCode = 500;   //server side error
+         }
+         next(err);
+      });
 };
 
 
 
 
 exports.createPost = (req, res, next) => {
-
-
    //server side validation
    const errors = validationResult(req);
    if (!errors.isEmpty()) {
@@ -85,7 +79,26 @@ exports.createPost = (req, res, next) => {
          // //possible storing post error 
          next(err); //go and reach the next error handling middleware.
       })
+}
 
 
 
+exports.getPost = (req, res, next) => {
+   const postId = req.params.postId;
+   Post.findById(postId)
+      .then(post => {
+         if (!post) {
+            const error = new Error('Could not find post.');
+            error.statusCode = 404;
+            throw error; //throw error inside then block (not catch). the next 'catch' block will be reached
+         }
+         res.status(200).json({ message: 'Post fetched', post: post })
+      })
+      .catch(err => {
+         //throwing error end up in this function.
+         if (!err.statusCode) {
+            err.statusCode = 500;   //server side error
+         }
+         next(err);
+      })
 }
