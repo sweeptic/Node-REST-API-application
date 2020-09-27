@@ -24,6 +24,7 @@ exports.getPosts = (req, res, next) => {
 
 
 exports.createPost = (req, res, next) => {
+   //server side validation
    const errors = validationResult(req);
    if (!errors.isEmpty()) {
       const error = new Error('Validation failed, entered data is incorrect.');
@@ -32,12 +33,17 @@ exports.createPost = (req, res, next) => {
    }
    if (!req.file) {
       const error = new Error('No image provided.');
-      error.statusCode = 422;
-      throw error;
+      error.statusCode = 422; //possible validation error . outside promise-then
+      throw error;         // <--- automatically exit the function execution here
+      //and try to reach the next error handling function or error handling middleware
    }
    const imageUrl = req.file.path.replace("\\", "/");
+
+   //get data from body
    const title = req.body.title;
    const content = req.body.content;
+
+   //create a new post
    const post = new Post({
       title: title,
       content: content,
@@ -45,8 +51,11 @@ exports.createPost = (req, res, next) => {
       creator: { name: 'Maximilian' }
    });
    post
+      //save post
       .save()
+      //get success result
       .then(result => {
+         //this is just only confirmation that it was stored successfully
          res.status(201).json({
             message: 'Post created successfully!',
             post: result
@@ -54,60 +63,13 @@ exports.createPost = (req, res, next) => {
       })
       .catch(err => {
          if (!err.statusCode) {
-            err.statusCode = 500;
+            err.statusCode = 500; //server side error
          }
-         next(err);
+         // throw err // inside promise-then. will not reach next error handling middleware.
+         //          // //possible storing post error 
+         next(err); //go and reach the next error handling middleware.
       });
 };
-// exports.createPost = (req, res, next) => {
-//    //server side validation
-//    const errors = validationResult(req);
-//    if (!errors.isEmpty()) {
-//       const error = new Error('Validation failed, entered data is incorrect.');
-//       error.statusCode = 422; //possible validation error . outside promise-then
-//       throw error;         // <--- automatically exit the function execution here
-//       //and try to reach the next error handling function or error handling middleware
-//    }
-
-//    //get data from body
-//    const title = req.body.title;
-//    const content = req.body.content;
-
-//    //create a new post
-//    const post = new Post({
-//       title: title,
-//       content: content,
-//       creator: { name: 'SurferBoy' },
-//       imageUrl: imageUrl
-//    })
-
-//    //save post
-//    post.save()
-
-//       //get success result
-//       .then((result) => {
-//          console.log(result);
-
-
-//          //this is just only confirmation that it was stored successfully
-//          res.status(201).json({
-//             message: 'Post created successfully',
-//             post: result
-//          })
-
-
-//       })
-//       //get unsuccessfull result if there is any
-//       .catch(err => {
-//          if (!err.statusCode) {
-//             err.statusCode = 500;   //server side error
-//          }
-//          // throw err // inside promise-then. will not reach next error handling middleware.
-//          // //possible storing post error 
-//          next(err); //go and reach the next error handling middleware.
-//       })
-// }
-
 
 
 exports.getPost = (req, res, next) => {
@@ -128,8 +90,6 @@ exports.getPost = (req, res, next) => {
          next(err);
       });
 };
-
-
 
 
 
@@ -179,7 +139,6 @@ exports.updatePost = (req, res, next) => {
          next(err);
       });
 };
-
 
 
 
