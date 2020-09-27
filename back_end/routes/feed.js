@@ -12,19 +12,35 @@ const router = express.Router();
 router.get('/posts', feedController.getPosts);      //PATH - METHOD pair
 
 //POST /feed/post
-router.post('/post', [
+router.post('/post',
 
-   body('title')
-      .trim()
-      .isLength({ min: 5 }),
-   body('content')
-      .trim()
-      .isLength({ min: 5 })
-
-],
+   [
+      body('title')
+         .trim()
+         .isLength({ min: 5 }),
+      body('content')
+         .trim()
+         .isLength({ min: 5 })
+   ],
    feedController.createPost
 );
 
 router.get('/post/:postId', feedController.getPost);
+
+//post, put, patch request have body. 
+router.put('/post/:postId',
+
+   [
+      body('title')
+         .trim()
+         .isLength({ min: 5 }),
+      body('content')
+         .trim()
+         .isLength({ min: 5 })
+   ],
+   feedController.updatePost
+
+);//keep the old id, and replace other data
+
 
 module.exports = router;
