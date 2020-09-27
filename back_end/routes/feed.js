@@ -1,19 +1,16 @@
-
 const express = require('express');
+const { body } = require('express-validator/check');
 
-const { body } = require('express-validator'); //middleware to apply server side validation
-
-const feedController = require('../controllers/feed')
+const feedController = require('../controllers/feed');
 
 const router = express.Router();
 
-//logic executed when request reached this
-//                   GET handle /feed/posts
-router.get('/posts', feedController.getPosts);      //PATH - METHOD pair
+// GET /feed/posts
+router.get('/posts', feedController.getPosts);
 
-//POST /feed/post
-router.post('/post',
-
+// POST /feed/post
+router.post(
+   '/post',
    [
       body('title')
          .trim()
@@ -27,9 +24,8 @@ router.post('/post',
 
 router.get('/post/:postId', feedController.getPost);
 
-//post, put, patch request have body. 
-router.put('/post/:postId',
-
+router.put(
+   '/post/:postId',
    [
       body('title')
          .trim()
@@ -39,8 +35,10 @@ router.put('/post/:postId',
          .isLength({ min: 5 })
    ],
    feedController.updatePost
+);
 
-);//keep the old id, and replace other data
 
+//encode data to url. because delete cant send in body
+router.delete('/post/:postId', feedController.deletePost)
 
 module.exports = router;
