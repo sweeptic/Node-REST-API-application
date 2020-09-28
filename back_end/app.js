@@ -9,6 +9,7 @@ const multer = require('multer');
 const { uuidv4 } = require('uuid');
 
 const feedRoutes = require('./routes/feed');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.use((req, res, next) => {
 //i can parse incoming request bodies
 //app use -  any method
 app.use('/feed', feedRoutes);
+app.use('/auth', authRoutes);
 
 //error handling middleware
 app.use((error, req, res, next) => {
