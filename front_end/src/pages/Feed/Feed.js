@@ -50,7 +50,22 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch('http://localhost:8080/feed/posts?page=')
+
+    //this enabled in back end code ( 
+    // res.setHeader('Access-Control-Allow-Headers', 'Content-Type', 'Content-Type, Authorization');)
+
+    // Bearer - convenction. 
+    fetch('http://localhost:8080/feed/posts?page=' + page, {
+      headers: {
+        Authorization: 'Bearer ' + this.props.token
+      }
+    })
+
+      //send token
+      // a. put into query param
+      // b. put into req body. not ideal because GET request have no body
+      // c. put into header
+
       .then(res => {
         if (res.status !== 200) {
           throw new Error('Failed to fetch posts.');
