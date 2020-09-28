@@ -28,7 +28,7 @@ router.put('/signup', [
 );
 
 
-router.post('/login')
+router.post('/login', authController.login)
 
 
 
