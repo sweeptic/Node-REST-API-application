@@ -9,39 +9,26 @@ const Post = require('../models/post')
 
 //title, author, date, image, content
 
-exports.getPosts = (req, res, next) => {
+exports.getPosts = async (req, res, next) => {
    const currentPage = req.query.page || 1; //undefined or 1
    const perPage = 2; //hardcoded in back and front end 
-   let totalItems;
-   Post.find()
-      .countDocuments()
-
-      .then(count => {
-         totalItems = count;
-         return Post.find()
-            .skip((currentPage - 1) * perPage)
-            .limit(perPage)
-      })
-
-      .then(posts => {
-         res
-            .status(200)
-            .json({
-               message: 'Fetched posts successfully.',
-               posts: posts,
-               totalItems: totalItems
-            });
-      })
-
-      .catch(err => {
-         if (!err.statusCode) {
-            err.statusCode = 500;
-         }
-         next(err);
-
-      })
+   try {
+      const totalItems = await Post.find().countDocuments();
+      const posts = await Post.find()
+         .skip((currentPage - 1) * perPage)
+         .limit(perPage)
+      res.status(200).json({
+         message: 'Fetched posts successfully.',
+         posts: posts,
+         totalItems: totalItems
+      });
+   } catch (error) {
+      if (!error.statusCode) {
+         error.statusCode = 500;
+      }
+      next(error);
+   }
 };
-
 
 
 exports.createPost = (req, res, next) => {
