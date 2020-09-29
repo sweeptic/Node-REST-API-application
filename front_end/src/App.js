@@ -68,7 +68,6 @@ class App extends Component {
         email: authData.email,
         password: authData.password
       })
-
     })
       .then(res => {
         if (res.status === 422) {
