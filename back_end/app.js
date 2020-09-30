@@ -60,7 +60,8 @@ app.use((req, res, next) => {
 
 app.use('/graphql', graphqlHTTP({
   schema: graphqlSchema,
-  rootValue: graphqlResolver
+  rootValue: graphqlResolver,
+  graphiql: true //get request use this. - thats why use 'use' and not 'use' method.
 }))
 
 //i can parse incoming request bodies
