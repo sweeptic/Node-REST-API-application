@@ -61,7 +61,19 @@ app.use((req, res, next) => {
 app.use('/graphql', graphqlHTTP({
   schema: graphqlSchema,
   rootValue: graphqlResolver,
-  graphiql: true //get request use this. - thats why use 'use' and not 'use' method.
+  graphiql: true, //get request use this. - thats why use 'use' and not 'use' method.
+  formatError(err) {
+    // return err; //default error format
+    if (!err.originalError) { //technical error. 
+      return err;
+    }
+    const data = err.originalError.data;
+    const message = err.message || 'An error occured.';
+    const code = err.originalError.code || 500;
+    return { message: message, status: code, data: data }
+  }
+
+
 }))
 
 //i can parse incoming request bodies
