@@ -55,14 +55,21 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
   //client can send extra authorization  data in the header
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  //by default the OPTION request is denied... 
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200)
+  }
   next();
 });
 //move validators into our resolver
+
+
 app.use('/graphql', graphqlHTTP({
   schema: graphqlSchema,
   rootValue: graphqlResolver,
   graphiql: true, //get request use this. - thats why use 'use' and not 'use' method.
-  formatError(err) {
+  customFormatErrorFn(err) {
     // return err; //default error format
     if (!err.originalError) { //technical error. 
       return err;
