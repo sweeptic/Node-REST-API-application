@@ -15,6 +15,8 @@ const { graphqlHTTP } = require('express-graphql');
 const graphqlSchema = require('./graphql/schema')
 const graphqlResolver = require('./graphql/resolvers');
 const { graphql } = require('graphql');
+const auth = require('./middleware/auth');
+
 
 const app = express();
 
@@ -64,6 +66,8 @@ app.use((req, res, next) => {
 });
 //move validators into our resolver
 
+//only set isAuth to true or false
+app.use(auth);
 
 app.use('/graphql', graphqlHTTP({
   schema: graphqlSchema,
