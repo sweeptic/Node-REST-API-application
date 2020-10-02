@@ -110,6 +110,8 @@ module.exports = {
 
       user.posts.push(createdPost);
 
+      await user.save();
+
       //add post to users posts
       return {
          ...createdPost._doc,

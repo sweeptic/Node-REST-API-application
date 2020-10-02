@@ -163,7 +163,7 @@ class Feed extends Component {
 
     fetch('http://localhost:8080/graphql', {
       method: 'POST',
-      body: graphQlQuery,
+      body: JSON.stringify(graphQlQuery),
       headers: {
         Authorization: 'Bearer ' + this.props.token,
         'Content-Type': 'application/json'
@@ -186,11 +186,11 @@ class Feed extends Component {
         }
         console.log(resData);
         const post = {
-          _id: resData.post._id,
-          title: resData.post.title,
-          content: resData.post.content,
-          creator: resData.post.creator,
-          createdAt: resData.post.createdAt
+          _id: resData.data.createPost._id,
+          title: resData.data.createPost.title,
+          content: resData.data.createPost.content,
+          creator: resData.data.createPost.creator,
+          createdAt: resData.data.createPost.createdAt
         };
         this.setState(prevState => {
           let updatedPosts = [...prevState.posts];
