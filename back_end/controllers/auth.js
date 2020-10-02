@@ -73,7 +73,7 @@ exports.login = async (req, res, next) => {
 
     res.status(200).json({ token: token, userId: loadedUser._id.toString() });
 
-  } catch (error) {
+  } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
