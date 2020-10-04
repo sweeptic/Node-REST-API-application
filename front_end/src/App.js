@@ -58,21 +58,16 @@ class App extends Component {
 
   loginHandler = (event, authData) => {
     event.preventDefault();
-
     const graphqlQuery = {
       query: `
-      {
-        login(
-          email: "${authData.email}"
-          password: "${authData.password}") {
+        {
+          login(email: "${authData.email}", password: "${authData.password}") {
             token
             userId
           }
-       }
-       `
-    }
-
-
+        }
+      `
+    };
     this.setState({ authLoading: true });
     fetch('http://localhost:8080/graphql', {
       method: 'POST',
@@ -81,13 +76,10 @@ class App extends Component {
       },
       body: JSON.stringify(graphqlQuery)
     })
-      .then(
-        res => {
-          return res.json();
-        }
-      )
+      .then(res => {
+        return res.json();
+      })
       .then(resData => {
-
         if (resData.errors && resData.errors[0].status === 422) {
           throw new Error(
             "Validation failed. Make sure the email address isn't used yet!"
@@ -96,18 +88,13 @@ class App extends Component {
         if (resData.errors) {
           throw new Error('User login failed!');
         }
-
-
         console.log(resData);
-
         this.setState({
           isAuth: true,
           token: resData.data.login.token,
           authLoading: false,
           userId: resData.data.login.userId
         });
-
-
         localStorage.setItem('token', resData.data.login.token);
         localStorage.setItem('userId', resData.data.login.userId);
         const remainingMilliseconds = 60 * 60 * 1000;
@@ -133,12 +120,9 @@ class App extends Component {
     const graphqlQuery = {
       query: `
         mutation {
-          createUser(
-            userInput: {
-              email: "${authData.signupForm.email.value}", 
-              name:"${authData.signupForm.name.value}", 
-              password:"${authData.signupForm.password.value}"
-            }) {
+          createUser(userInput: {email: "${authData.signupForm.email.value
+        }", name:"${authData.signupForm.name.value}", password:"${authData.signupForm.password.value
+        }"}) {
             _id
             email
           }
